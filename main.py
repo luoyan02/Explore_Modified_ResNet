@@ -42,14 +42,14 @@ model_names = sorted(name for name in MyModel.__dict__
 '''
 parser = argparse.ArgumentParser(description='PyTorch Tiny ImageNet Training')
 # 存放数据集的位置
-parser.add_argument('data', metavar='DIR', nargs='?', default='./homework2/tiny_imagenet_200_reorg',
+parser.add_argument('data', metavar='DIR', nargs='?', default='./tiny_imagenet_200_reorg',
                     help='path to dataset (default: tiny_imagenet_200_reorg)')
 parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18')
 # data_loader一次性创建num_workers个工作进程
 parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
-# 每个数据集在网络中被训练的次数 这里迭代90次
-parser.add_argument('--epochs', default=10, type=int, metavar='N', 
+# 每个数据集在网络中被训练的次数 这里迭代20次
+parser.add_argument('--epochs', default=20, type=int, metavar='N', 
                     help='number of total epochs to run')
 # 从第几个epoch开始训练
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
@@ -217,7 +217,7 @@ def main_worker(gpu, ngpus_per_node, args):
                                 weight_decay=args.weight_decay)
     
     """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    scheduler = StepLR(optimizer, step_size=30, gamma=0.1)
+    scheduler = StepLR(optimizer, step_size=5, gamma=0.5)
     
     # optionally resume from a checkpoint
     if args.resume:
@@ -361,6 +361,10 @@ def train(train_loader, model, criterion, optimizer, epoch, device, args):
         loss.backward() # 反向传播
         optimizer.step()
 
+        '''
+            top1_acc: 真实标签是预测出来的概率最大的类就算作是预测正确
+            top5_acc: 真实标签是预测出来的概率最大的前5类算作是预测正确
+        '''
         # measure elapsed time
         batch_time.update(time.time() - end) # 消耗的时间
         end = time.time()
