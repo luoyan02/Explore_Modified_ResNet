@@ -1,4 +1,4 @@
-# dlp_hw2
+# Explore Modified ResNet
 以下对此仓库中存放的文件进行几点说明：
 
 ### main.py
